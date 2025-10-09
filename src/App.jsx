@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css";
+import styles from "./App.module.css";
 import Home from "./pages/Home";
 
 const App = () => {
@@ -14,7 +14,7 @@ const App = () => {
       </div>
 
       <div>
-        <p className={style.container}>Hello world</p>
+        <p className={styles.container}>Hello world</p>
       </div>
     </>
   );
