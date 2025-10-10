@@ -1,4 +1,6 @@
 import styles from "./Tasks.module.css";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import { FaPlus } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -35,23 +37,36 @@ const Tasks = () => {
               <div className={styles.iconButtons}>
                 {/* complete icon */}
                 <span>
-                  <FaCheckCircle color="#65a30d" size={25} />
+                  <FaCheckCircle color="#65a30d" size={20} />
                 </span>
 
                 {/* edit icon */}
                 <span>
-                  <FaPen color="#2563eb" size={25} />
+                  <FaPen
+                    color="#2563eb"
+                    size={20}
+                    data-tooltip-id="crudBtns"
+                    data-tooltip-content="Edit"
+                  />
                 </span>
 
                 {/* delete icon */}
                 <span>
-                  <FaRegTrashAlt color="#dc2626" size={25} />
+                  <FaRegTrashAlt
+                    color="#dc2626"
+                    size={20}
+                    data-tooltip-id="crudBtns"
+                    data-tooltip-content="Delete"
+                  />
                 </span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Tooltip instance */}
+      <ReactTooltip id="crudBtns" place="bottom" />
     </>
   );
 };
