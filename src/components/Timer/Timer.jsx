@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./Timer.module.css";
+import styles from "./PomodoroCard.module.css";
 
-const INITIAL_TIME = 25 * 60; // 25 minutes in seconds
+const INITIAL_TIME = 25 * 60; // 25 minutes
 
-const Timer = () => {
+const PomodoroCard = () => {
   const [time, setTime] = useState(INITIAL_TIME);
   const [isRunning, setIsRunning] = useState(false);
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
@@ -27,26 +27,23 @@ const Timer = () => {
     return `${m}:${s}`;
   };
 
-  const handlePause = () => {
-    setIsRunning((prev) => !prev);
-  };
-
+  const handleStartPause = () => setIsRunning((prev) => !prev);
   const handleReset = () => {
     setTime(INITIAL_TIME);
     setIsRunning(false);
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.card}>
       <h2>Pomodoro Timer</h2>
 
-      <div className={styles.timer}>
-        <p>Working on:</p>
-        <strong>Complete project proposal</strong>
-        <p>Sessions completed: {sessionsCompleted}</p>
-
-        {/* ✅ TIMER ADDED HERE (just above buttons) */}
-        <h1 className={styles.timeDisplay}>{formatTime(time)}</h1>
+      <div className={styles.timerWrapper}>
+        <div className={styles.timer}>
+          <p>Working on:</p>
+          <strong>Complete project proposal</strong>
+          <p>Sessions completed: {sessionsCompleted}</p>
+          <h1 className={styles.timeDisplay}>{formatTime(time)}</h1>
+        </div>
       </div>
 
       <div className={styles.progressBarContainer}>
@@ -56,11 +53,19 @@ const Timer = () => {
         ></div>
       </div>
 
-      {/* ✅ BUTTONS STAY BELOW */}
-      <button onClick={handlePause}>{isRunning ? "Pause" : "Start"}</button>
-      <button onClick={handleReset}>Reset</button>
+      <div className={styles.buttons}>
+        <button
+          className={`${styles.pauseBtn} ${isRunning ? styles.running : ""}`}
+          onClick={handleStartPause}
+        >
+          {isRunning ? "Pause" : "Start"}
+        </button>
+        <button className={styles.resetBtn} onClick={handleReset}>
+          Reset
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Timer;
+export default PomodoroCard;
