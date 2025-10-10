@@ -12,7 +12,11 @@ const Tasks = () => {
           <div>
             <h2>Tasks</h2>
           </div>
-          <button className={styles.addBtn} aria-label="Add task" title="Add task">
+          <button
+            className={styles.addBtn}
+            aria-label="Add task"
+            title="Add task"
+          >
             <FaPlus />
           </button>
         </div>
