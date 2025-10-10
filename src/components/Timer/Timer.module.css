@@ -1,87 +1,42 @@
-.container {
+.card {
   background-color: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 320px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  width: 280px;
   margin: 40px auto;
-  padding: 30px 20px;
+  padding: 20px 15px;
   text-align: center;
   font-family: "Inter", sans-serif;
 }
 
-h2{
-  color:  #000000
-}
-
-.title {
+h2 {
   margin-bottom: 20px;
+  color: #000;
 }
 
-
-.taskBox {
-  background-color: #f0e9ff;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
-.taskForm {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  justify-content: center;
-}
-
-.taskInput {
-  flex: 1;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-}
-
-.taskInput:focus {
-  border-color: #7a3fff;
-}
-
-.saveBtn {
-  background-color: #7a3fff;
-  color: black;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.saveBtn:hover {
-  background-color: #6b32e1;
-}
-
-.taskName {
-  display: block;
-  font-size: 15px;
-  font-weight: 600;
-  color: #4a2f87;
-  margin-bottom: 5px;
-}
-
-/* ⏲️ Timer */
+/* Timer wrapper */
 .timerWrapper {
   background-color: #e5d4f7; /* light purple */
   border-radius: 16px;
   padding: 15px;
+  margin-bottom: 15px;
 }
 
-
-p{
-  color: black;
+/* Timer inside wrapper */
+.timer {
+  color: #000;
 }
 
+/* Countdown display */
+.timeDisplay {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #4a2f87;
+  letter-spacing: 1px;
+}
 
-/* 📉 Progress bar */
+/* Progress bar */
 .progressBarContainer {
   height: 6px;
   background-color: #f0f0f0;
@@ -96,7 +51,7 @@ p{
   transition: width 1s linear;
 }
 
-
+/* Buttons */
 .buttons {
   display: flex;
   justify-content: center;
@@ -104,20 +59,40 @@ p{
 }
 
 .pauseBtn {
-  background-color: #e94b35;
+  background-color: #7a3fff; /* default purple */
   color: white;
   border: none;
-  padding: 10px 18px;
+  padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.pauseBtn:hover {
+  transform: scale(1.05);
+}
+
+/* When timer is running, Start button turns red */
+.running {
+  background-color: #e94b35; /* red while running */
+}
+
+.running:hover {
+  background-color: #d13a28; /* darker red on hover */
 }
 
 .resetBtn {
   background-color: #f0f0f0;
   border: none;
-  padding: 10px 18px;
+  padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.resetBtn:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
 }
