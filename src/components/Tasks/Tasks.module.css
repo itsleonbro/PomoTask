@@ -22,6 +22,17 @@
   height: 40px;
   border-radius: 10px;
   background-color: #6d28d9;
+  transition: 0.2s all ease-in-out;
+}
+
+.addBtn:hover {
+  border-color: transparent;
+}
+
+.addBtn:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: none;
 }
 
 .tasks {
@@ -63,9 +74,10 @@
 
 .iconButtons span {
   cursor: pointer;
-  transition: 0.2s ease-in-out;
+  transition: 0.2s all ease-in-out;
 }
 
-.iconButtons span:hover {
+.iconButtons span:hover,
+.addBtn:hover {
   transform: scale(1.05);
 }
