@@ -1,1 +1,110 @@
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 320px;
+  margin: 0;
+  padding: 24px 20px;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #000;
+}
+
+/* Timer wrapper */
+.timerWrapper {
+  background-color: #e5d4f7; /* light purple */
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+/* Timer inside wrapper */
+.timer {
+  color: #000;
+}
+
+/* Countdown display */
+.timeDisplay {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #4a2f87;
+  letter-spacing: 1px;
+}
+
+/* Progress bar */
+.progressBarContainer {
+  height: 6px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0 20px 0;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #7a3fff;
+  transition: width 1s linear;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.clockIcon {
+  padding-right: 10px;
+}
+
+.pauseBtn {
+  background-color: #7a3fff; /* default purple */
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.pauseBtn:hover {
+  transform: scale(1.05);
+}
+
+/* When timer is running, Start button turns red */
+.running {
+  background-color: #e94b35; /* red while running */
+}
+
+.running:hover {
+  background-color: #d13a28; /* darker red on hover */
+}
+
+.resetBtn {
+  background-color: #766d6d;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.resetBtn:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
