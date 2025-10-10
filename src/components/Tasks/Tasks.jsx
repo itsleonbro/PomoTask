@@ -30,13 +30,19 @@ const Tasks = () => {
             <div className={styles.rightSide}>
               <div className={styles.iconButtons}>
                 {/* complete icon */}
-                <FaCheckCircle />
+                <span>
+                  <FaCheckCircle color="#65a30d" size={25} />
+                </span>
 
                 {/* edit icon */}
-                <FaPen />
+                <span>
+                  <FaPen color="#2563eb" size={25} />
+                </span>
 
                 {/* delete icon */}
-                <FaRegTrashAlt />
+                <span>
+                  <FaRegTrashAlt color="#dc2626" size={25} />
+                </span>
               </div>
             </div>
           </div>

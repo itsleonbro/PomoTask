@@ -49,3 +49,12 @@
   display: flex;
   gap: 10px;
 }
+
+.iconButtons span {
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.iconButtons span:hover {
+  transform: scale(1.05);
+}
