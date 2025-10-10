@@ -26,6 +26,15 @@ const Tasks = () => {
     setEditedTitle(currentTitle);
   };
 
+  const handleToggleStatus = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id
+        ? { ...task, status: task.status === "done" ? "pending" : "done" }
+        : task
+    );
+    setTasks(updatedTasks);
+  };
+
   const handleSaveEdit = (id) => {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, title: editedTitle } : task
@@ -113,9 +122,13 @@ const Tasks = () => {
 
               <div className={styles.rightSide}>
                 <div className={styles.iconButtons}>
-                  <span>
-                    <FaCheckCircle color="#65a30d" size={25} />
+                  <span onClick={() => handleToggleStatus(task.id)}>
+                    <FaCheckCircle
+                      color={task.status === "done" ? "#65a30d" : "#a3a3a3"}
+                      size={25}
+                    />
                   </span>
+
                   <span onClick={() => handleEdit(task.id, task.title)}>
                     <FaPen color="#2563eb" size={25} />
                   </span>
