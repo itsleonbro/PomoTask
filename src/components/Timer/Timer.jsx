@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./PomodoroCard.module.css";
+import styles from "./Timer.module.css";
 
 const INITIAL_TIME = 25 * 60; // 25 minutes
 
