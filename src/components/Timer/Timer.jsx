@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./Timer.module.css";
+import { FaRegClock } from "react-icons/fa";
 
 const INITIAL_TIME = 25 * 60; // 25 minutes
 
@@ -22,7 +23,9 @@ const PomodoroCard = () => {
   }, [isRunning, time]);
 
   const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
     const s = (seconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
@@ -33,10 +36,19 @@ const PomodoroCard = () => {
     setIsRunning(false);
   };
 
+  const HeadingWithIcon = () => {};
+
   return (
     <div className={styles.card}>
-      <h2>Pomodoro Timer</h2>
-
+      <div className={styles.headingWrapper}>
+        <h2 className={styles.heading}>
+          <span className={styles.clockIcon}>
+          <FaRegClock className={styles.icon} />
+          </span>
+          
+          Pomodoro Timer
+        </h2>
+      </div>
       <div className={styles.timerWrapper}>
         <div className={styles.timer}>
           <p>Working on:</p>

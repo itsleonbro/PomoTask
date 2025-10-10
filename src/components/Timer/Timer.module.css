@@ -58,6 +58,10 @@ h2 {
   gap: 10px;
 }
 
+.clockIcon{
+  padding-right: 10px;
+}
+
 .pauseBtn {
   background-color: #7a3fff; /* default purple */
   color: white;
@@ -83,7 +87,7 @@ h2 {
 }
 
 .resetBtn {
-  background-color: #f0f0f0;
+  background-color: #766d6d;
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
