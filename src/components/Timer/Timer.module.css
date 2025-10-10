@@ -69,13 +69,12 @@ h2{
 }
 
 /* ⏲️ Timer */
-.timer {
- font-size: 10px;
-  color: black;
-  background-color:#C5B4E3;
-  margin: 20px 0;
-  border-radius: 10px;
+.timerWrapper {
+  background-color: #e5d4f7; /* light purple */
+  border-radius: 16px;
+  padding: 15px;
 }
+
 
 p{
   color: black;
