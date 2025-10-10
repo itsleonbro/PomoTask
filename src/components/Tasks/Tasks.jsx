@@ -1,4 +1,10 @@
 import styles from "./Tasks.module.css";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+import { FaPlus } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -72,76 +78,11 @@ const Tasks = () => {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <div>
-            <h2>Tasks</h2>
-          </div>
-          <button
-            className={styles.addBtn}
-            aria-label="Add task"
-            title="Add task"
-            onClick={handleAddClick}
-          >
-            <FaPlus />
-          </button>
-        </div>
-        {showForm && (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Enter task title"
-            />
-            <button type="submit">Save</button>
-          </form>
-        )}
-        <div className={styles.tasks}>
-          {tasks.map((task) => (
-            <div key={task.id} className={styles.task}>
-              <div className={styles.leftSide}>
-                {editTaskId === task.id ? (
-                  <input
-                    type="text"
-                    value={editedTitle}
-                    onChange={(e) => setEditedTitle(e.target.value)}
-                    onBlur={() => handleSaveEdit(task.id)}
-                    autoFocus
-                  />
-                ) : (
-                  <h3>{task.title}</h3>
-                )}
-
-                <div className={styles.taskInfo}>
-                  <div className={styles.taskStatus}>{task.status}</div>
-                  <div className={styles.taskSessions}>
-                    {task.sessions} Sessions
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.rightSide}>
-                <div className={styles.iconButtons}>
-                  <span onClick={() => handleToggleStatus(task.id)}>
-                    <FaCheckCircle
-                      color={task.status === "done" ? "#65a30d" : "#a3a3a3"}
-                      size={25}
-                    />
-                  </span>
-
-                  <span onClick={() => handleEdit(task.id, task.title)}>
-                    <FaPen color="#2563eb" size={25} />
-                  </span>
-
-                  <span onClick={() => handleDelete(task.id)}>
-                    <FaRegTrashAlt color="#dc2626" size={25} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        
       </div>
+
+      {/* Tooltip instance */}
+      <ReactTooltip id="crudBtns" place="bottom" />
     </>
   );
 };

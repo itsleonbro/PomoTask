@@ -8,14 +8,6 @@ const App = () => {
   return (
     <>
       <Home />
-
-      <div>
-        <p className="container">Hello world</p>
-      </div>
-
-      <div>
-        <p className={styles.container}>Hello world</p>
-      </div>
     </>
   );
 };
