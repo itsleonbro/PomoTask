@@ -9,7 +9,6 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
-
   const handleAddClick = () => {
     setShowForm(true);
   };
