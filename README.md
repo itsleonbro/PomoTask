@@ -21,7 +21,7 @@ Boipelo Ngakane: Project manager, Frontend Developer
 ## Agile Plan Summary
 https://capeitinitiative-my.sharepoint.com/:w:/g/personal/mmela_dyantyi_capaciti_org_za/Ec06iOTdvHxAsV3osWjZ8aQB6pJJKHJUYq-E7U1_tsogtg?e=wqTZQ4
 ## How to run the project
-Clone repository: git clone <url>
+Clone repository: git clone <url> https://github.com/itsleonbro/PomoTask.git </url>
 <br>
 install node modules: npm install
 <br>
