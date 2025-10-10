@@ -22,8 +22,8 @@ const Timer = () => {
   }, [isRunning, time]);
 
   const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
 
@@ -39,13 +39,15 @@ const Timer = () => {
   return (
     <div className={styles.container}>
       <h2>Pomodoro Timer</h2>
+
       <div className={styles.timer}>
         <p>Working on:</p>
         <strong>Complete project proposal</strong>
         <p>Sessions completed: {sessionsCompleted}</p>
-      </div>
 
-      {/*<h1 className={styles.timer}>{formatTime(time)}</h1>}*/}
+        {/* ✅ TIMER ADDED HERE (just above buttons) */}
+        <h1 className={styles.timeDisplay}>{formatTime(time)}</h1>
+      </div>
 
       <div className={styles.progressBarContainer}>
         <div
@@ -53,10 +55,10 @@ const Timer = () => {
           style={{ width: `${(time / INITIAL_TIME) * 100}%` }}
         ></div>
       </div>
-      <div>
-        <button onClick={handlePause}>{isRunning ? "Pause" : "Start"}</button>
-        <button onClick={handleReset}>Reset</button>
-      </div>
+
+      {/* ✅ BUTTONS STAY BELOW */}
+      <button onClick={handlePause}>{isRunning ? "Pause" : "Start"}</button>
+      <button onClick={handleReset}>Reset</button>
     </div>
   );
 };
