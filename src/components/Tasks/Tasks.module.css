@@ -35,7 +35,8 @@
   gap: 10px;
   border: 2px solid #e7e5e4;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 15px 20px;
+  cursor: pointer;
 }
 
 .taskInfo {
@@ -43,10 +44,14 @@
   gap: 10px;
 }
 
-.taskStatus {
-  background-color: #e7e5e4;
+.taskStatus,
+.taskSessions {
   padding: 5px 10px;
   border-radius: 10px;
+}
+
+.taskStatus {
+  background-color: #e7e5e4;
 }
 
 .iconButtons {

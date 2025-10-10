@@ -22,8 +22,8 @@ const Tasks = () => {
             <div className={styles.leftSide}>
               <h3>Complete project proposal</h3>
               <div className={styles.taskInfo}>
-                <div className={styles.taskStatus}>Pending</div>
-                <div>0 Sessions</div>
+                <div className={styles.taskStatus}>pending</div>
+                <div className={styles.taskSessions}>0 Sessions</div>
               </div>
             </div>
 
