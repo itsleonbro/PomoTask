@@ -9,8 +9,14 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
+
   const handleAddClick = () => {
     setShowForm(true);
+  };
+
+  const handleDelete = (id) => {
+    const updatedTask = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTask);
   };
 
   const handleSubmit = (e) => {
@@ -86,7 +92,7 @@ const Tasks = () => {
                   <span>
                     <FaPen color="#2563eb" size={25} />
                   </span>
-                  <span>
+                  <span onClick={() => handleDelete(task.id)}>
                     <FaRegTrashAlt color="#dc2626" size={25} />
                   </span>
                 </div>
