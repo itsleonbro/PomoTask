@@ -5,8 +5,72 @@ import { FaPlus } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 
 const Tasks = () => {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [editTaskId, setEditTaskId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+
+  const handleAddClick = () => {
+    setShowForm(true);
+  };
+
+  const handleDelete = (id) => {
+    const updatedTask = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTask);
+  };
+
+  const handleEdit = (id, currentTitle) => {
+    setEditTaskId(id);
+    setEditedTitle(currentTitle);
+  };
+
+  const handleToggleStatus = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id
+        ? { ...task, status: task.status === "done" ? "pending" : "done" }
+        : task
+    );
+    setTasks(updatedTasks);
+  };
+
+  const handleSaveEdit = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, title: editedTitle } : task
+    );
+    setTasks(updatedTasks);
+    setEditTaskId(null);
+    setEditedTitle("");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!newTask.trim()) return;
+
+    const task = {
+      id: Date.now(),
+      title: newTask,
+      status: "pending",
+      sessions: 0,
+    };
+
+    setTasks([...tasks, task]);
+    setNewTask("");
+    setShowForm(false);
+  };
+
+  useEffect(() => {
+    const stored = localStorage.getItem("tasks");
+    if (stored) setTasks(JSON.parse(stored));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
   return (
     <>
       <div className={styles.container}>
@@ -18,50 +82,66 @@ const Tasks = () => {
             className={styles.addBtn}
             aria-label="Add task"
             title="Add task"
+            onClick={handleAddClick}
           >
             <FaPlus />
           </button>
         </div>
-
+        {showForm && (
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <input
+              type="text"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder="Enter task title"
+            />
+            <button type="submit">Save</button>
+          </form>
+        )}
         <div className={styles.tasks}>
-          <div className={styles.task}>
-            <div className={styles.leftSide}>
-              <h3>Complete project proposal</h3>
-              <div className={styles.taskInfo}>
-                <div className={styles.taskStatus}>pending</div>
-                <div className={styles.taskSessions}>0 Sessions</div>
+          {tasks.map((task) => (
+            <div key={task.id} className={styles.task}>
+              <div className={styles.leftSide}>
+                {editTaskId === task.id ? (
+                  <input
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    onBlur={() => handleSaveEdit(task.id)}
+                    autoFocus
+                  />
+                ) : (
+                  <h3>{task.title}</h3>
+                )}
+
+                <div className={styles.taskInfo}>
+                  <div className={styles.taskStatus}>{task.status}</div>
+                  <div className={styles.taskSessions}>
+                    {task.sessions} Sessions
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.rightSide}>
+                <div className={styles.iconButtons}>
+                  <span onClick={() => handleToggleStatus(task.id)}>
+                    <FaCheckCircle
+                      color={task.status === "done" ? "#65a30d" : "#a3a3a3"}
+                      size={25}
+                    />
+                  </span>
+
+                  <span onClick={() => handleEdit(task.id, task.title)}>
+                    <FaPen color="#2563eb" size={25} />
+                  </span>
+
+                  <span onClick={() => handleDelete(task.id)}>
+                    <FaRegTrashAlt color="#dc2626" size={25} />
+                  </span>
+                </div>
               </div>
             </div>
-
-            <div className={styles.rightSide}>
-              <div className={styles.iconButtons}>
-                {/* complete icon */}
-                <span>
-                  <FaCheckCircle color="#65a30d" size={20} />
-                </span>
-
-                {/* edit icon */}
-                <span>
-                  <FaPen
-                    color="#2563eb"
-                    size={20}
-                    data-tooltip-id="crudBtns"
-                    data-tooltip-content="Edit"
-                  />
-                </span>
-
-                {/* delete icon */}
-                <span>
-                  <FaRegTrashAlt
-                    color="#dc2626"
-                    size={20}
-                    data-tooltip-id="crudBtns"
-                    data-tooltip-content="Delete"
-                  />
-                </span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
