@@ -117,58 +117,69 @@ const Tasks = () => {
           </form>
         )}
         <div className={styles.tasks}>
-          {tasks.map(task => (
-            <div key={task.id} className={styles.task}>
-              <div className={styles.leftSide}>
-                {editTaskId === task.id ? (
-                  <input
-                    type="text"
-                    value={editedTitle}
-                    onChange={e => setEditedTitle(e.target.value)}
-                    onBlur={() => handleSaveEdit(task.id)}
-                    onKeyDown={e => {
-                      if (e.key === "Enter") {
-                        handleSaveEdit(task.id);
-                      } else if (e.key === "Escape") {
-                        setEditTaskId(null);
-                        setEditedTitle("");
-                      }
-                    }}
-                    className={styles.editInput}
-                    autoFocus
-                  />
-                ) : (
-                  <h3>{task.title}</h3>
-                )}
+          {tasks.length === 0 ? (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>📝</div>
+              <h3 className={styles.emptyTitle}>No tasks yet</h3>
+              <p className={styles.emptyMessage}>
+                Click the + button above to add your first task and start being
+                productive!
+              </p>
+            </div>
+          ) : (
+            tasks.map(task => (
+              <div key={task.id} className={styles.task}>
+                <div className={styles.leftSide}>
+                  {editTaskId === task.id ? (
+                    <input
+                      type="text"
+                      value={editedTitle}
+                      onChange={e => setEditedTitle(e.target.value)}
+                      onBlur={() => handleSaveEdit(task.id)}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          handleSaveEdit(task.id);
+                        } else if (e.key === "Escape") {
+                          setEditTaskId(null);
+                          setEditedTitle("");
+                        }
+                      }}
+                      className={styles.editInput}
+                      autoFocus
+                    />
+                  ) : (
+                    <h3>{task.title}</h3>
+                  )}
 
-                <div className={styles.taskInfo}>
-                  <div className={styles.taskStatus}>{task.status}</div>
-                  <div className={styles.taskSessions}>
-                    {task.sessions} Sessions
+                  <div className={styles.taskInfo}>
+                    <div className={styles.taskStatus}>{task.status}</div>
+                    <div className={styles.taskSessions}>
+                      {task.sessions} Sessions
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.rightSide}>
+                  <div className={styles.iconButtons}>
+                    <span onClick={() => handleToggleStatus(task.id)}>
+                      <FaCheckCircle
+                        color={task.status === "done" ? "#65a30d" : "#a3a3a3"}
+                        size={25}
+                      />
+                    </span>
+
+                    <span onClick={() => handleEdit(task.id, task.title)}>
+                      <FaPen color="#2563eb" size={25} />
+                    </span>
+
+                    <span onClick={() => handleDelete(task.id)}>
+                      <FaRegTrashAlt color="#dc2626" size={25} />
+                    </span>
                   </div>
                 </div>
               </div>
-
-              <div className={styles.rightSide}>
-                <div className={styles.iconButtons}>
-                  <span onClick={() => handleToggleStatus(task.id)}>
-                    <FaCheckCircle
-                      color={task.status === "done" ? "#65a30d" : "#a3a3a3"}
-                      size={25}
-                    />
-                  </span>
-
-                  <span onClick={() => handleEdit(task.id, task.title)}>
-                    <FaPen color="#2563eb" size={25} />
-                  </span>
-
-                  <span onClick={() => handleDelete(task.id)}>
-                    <FaRegTrashAlt color="#dc2626" size={25} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
