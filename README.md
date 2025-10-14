@@ -62,23 +62,6 @@ PomoTask/
 - This project uses CSS Modules for component-scoped styles.
 - React Fast Refresh is enabled via Vite for a smooth dev experience.
 
-## Running the Project Locally
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/itsleonbro/PomoTask.git
-   cd PomoTask
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-   The server will start, and you can typically access it at `http://localhost:5173` in your web browser.
-
 ## Deployment
 
 The built output is static and can be deployed to platforms like Vercel, Netlify, GitHub Pages, or any static host.
