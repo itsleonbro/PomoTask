@@ -1,22 +1,92 @@
+# PomoTask
 
-# PomoTask 👨🏽‍💻
+A simple, fast Pomodoro timer with lightweight task management. Built with React and Vite.
 
-The PomoTask is a pomodoro app, that also has the task feature to help the user focus on one task at a time. 
+## Features
 
-## Team Members & Roles
-Leon Hlabathi: Project manager, Frontend Developer
+- Pomodoro timer to help you focus
+- Task list to track what you’re working on
+- Clean, minimal UI
 
-Mmela Dyantyi: Frontend developer, Writer
+## Tech Stack
 
-Boipelo Ngakane: Scribe, Frontend developer
+- React (Vite)
+- CSS Modules
+
+## Requirements
+
+- Node.js 18+ (recommended LTS)
+- npm 9+ (or use pnpm/yarn if preferred)
+
+## Getting Started
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/itsleonbro/PomoTask.git
+   cd PomoTask
+   ```
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+3. Start the dev server
+   ```bash
+   npm run dev
+   ```
+   The server URL will be shown in the terminal (typically `http://localhost:5173`).
 
 
-## Agile Plan Summary
-https://capeitinitiative-my.sharepoint.com/:w:/g/personal/mmela_dyantyi_capaciti_org_za/Ec06iOTdvHxAsV3osWjZ8aQB6pJJKHJUYq-E7U1_tsogtg?e=wqTZQ4
+## Project Structure
 
-## How to run the project
-Clone repository: `git clone https://github.com/itsleonbro/PomoTask.git`
-<br>
-Install Node modules: `npm install`
-<br>
-Run the project: `npm run dev`
+```
+PomoTask/
+  ├─ src/
+  │  ├─ components/
+  │  │  ├─ Timer/
+  │  │  │  ├─ Timer.jsx
+  │  │  │  └─ Timer.module.css
+  │  │  └─ Tasks/
+  │  │     ├─ Tasks.jsx
+  │  │     └─ Tasks.module.css
+  │  ├─ pages/
+  │  │  └─ Home.jsx
+  │  ├─ App.jsx
+  │  └─ main.jsx
+  ├─ public/
+  ├─ index.html
+  └─ vite.config.js
+```
+
+## Development Notes
+
+- This project uses CSS Modules for component-scoped styles.
+- React Fast Refresh is enabled via Vite for a smooth dev experience.
+
+## Running the Project Locally
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/itsleonbro/PomoTask.git
+   cd PomoTask
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   The server will start, and you can typically access it at `http://localhost:5173` in your web browser.
+
+## Deployment
+
+The built output is static and can be deployed to platforms like Vercel, Netlify, GitHub Pages, or any static host.
+
+## Contributing
+
+Issues and pull requests are welcome. If you’re proposing a significant change, please open an issue first to discuss what you’d like to change.
+
+## Acknowledgements
+
+Created by the CloudCTRL team.
