@@ -98,3 +98,133 @@
 .addBtn:hover {
   transform: scale(1.05);
 }
+
+/* Form Styles */
+.form {
+  margin: 20px 0;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inputContainer {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(109, 40, 217, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.inputContainer:focus-within {
+  border-color: rgba(109, 40, 217, 0.3);
+  box-shadow: 0 4px 20px rgba(109, 40, 217, 0.1);
+  transform: translateY(-2px);
+}
+
+.taskInput {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid rgba(231, 229, 228, 0.5);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.taskInput::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.taskInput:focus {
+  border-color: #6d28d9;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.1);
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 12px 24px;
+  border: 2px solid rgba(231, 229, 228, 0.5);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.cancelBtn:hover {
+  border-color: #e5e7eb;
+  background: rgba(249, 250, 251, 1);
+  color: #374151;
+  transform: translateY(-1px);
+}
+
+.saveBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+}
+
+.saveBtn:hover {
+  background: linear-gradient(135deg, #5b21b6 0%, #6d28d9 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
+}
+
+.saveBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.3);
+}
+
+/* Edit Input Styles */
+.editInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(109, 40, 217, 0.2);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.editInput:focus {
+  border-color: #6d28d9;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+}
