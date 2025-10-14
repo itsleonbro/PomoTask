@@ -18,8 +18,8 @@ const Tasks = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
-    const updatedTask = tasks.filter((task) => task.id !== id);
+  const handleDelete = id => {
+    const updatedTask = tasks.filter(task => task.id !== id);
     setTasks(updatedTask);
   };
 
@@ -28,8 +28,8 @@ const Tasks = () => {
     setEditedTitle(currentTitle);
   };
 
-  const handleToggleStatus = (id) => {
-    const updatedTasks = tasks.map((task) =>
+  const handleToggleStatus = id => {
+    const updatedTasks = tasks.map(task =>
       task.id === id
         ? { ...task, status: task.status === "done" ? "pending" : "done" }
         : task
@@ -37,8 +37,8 @@ const Tasks = () => {
     setTasks(updatedTasks);
   };
 
-  const handleSaveEdit = (id) => {
-    const updatedTasks = tasks.map((task) =>
+  const handleSaveEdit = id => {
+    const updatedTasks = tasks.map(task =>
       task.id === id ? { ...task, title: editedTitle } : task
     );
     setTasks(updatedTasks);
@@ -46,7 +46,7 @@ const Tasks = () => {
     setEditedTitle("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
@@ -89,25 +89,52 @@ const Tasks = () => {
         </div>
         {showForm && (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Enter task title"
-            />
-            <button type="submit">Save</button>
+            <div className={styles.inputContainer}>
+              <input
+                type="text"
+                value={newTask}
+                onChange={e => setNewTask(e.target.value)}
+                placeholder="What needs to be done?"
+                className={styles.taskInput}
+                autoFocus
+              />
+              <div className={styles.formActions}>
+                <button
+                  type="button"
+                  className={styles.cancelBtn}
+                  onClick={() => {
+                    setShowForm(false);
+                    setNewTask("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className={styles.saveBtn}>
+                  Add Task
+                </button>
+              </div>
+            </div>
           </form>
         )}
         <div className={styles.tasks}>
-          {tasks.map((task) => (
+          {tasks.map(task => (
             <div key={task.id} className={styles.task}>
               <div className={styles.leftSide}>
                 {editTaskId === task.id ? (
                   <input
                     type="text"
                     value={editedTitle}
-                    onChange={(e) => setEditedTitle(e.target.value)}
+                    onChange={e => setEditedTitle(e.target.value)}
                     onBlur={() => handleSaveEdit(task.id)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") {
+                        handleSaveEdit(task.id);
+                      } else if (e.key === "Escape") {
+                        setEditTaskId(null);
+                        setEditedTitle("");
+                      }
+                    }}
+                    className={styles.editInput}
                     autoFocus
                   />
                 ) : (
