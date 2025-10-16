@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Timer.module.css";
 import { FaRegClock } from "react-icons/fa";
 
-const INITIAL_TIME = 25 * 60; // 25 minutes
+const INITIAL_TIME = 10; // 25 minutes
 const STORAGE_KEY = "pomodoro-timer-state";
 
 const loadTimerState = () => {
@@ -18,14 +18,26 @@ const loadTimerState = () => {
   return null;
 };
 
-const PomodoroCard = () => {
+const PomodoroCard = ({ activeTaskId, setActiveTaskId, tasks }) => {
 const savedState = loadTimerState();
 
 const [time, setTime] = useState(savedState?.time ?? INITIAL_TIME);
 const [isRunning, setIsRunning] = useState(savedState?.isRunning ?? false);
 const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsCompleted ?? 0);
+const [activeTaskTitle, setActiveTaskTitle] = useState("");
 
   const timerRef = useRef(null);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedId = e.dataTransfer.getData("text/plain");
+    const newActiveTaskId = Number(droppedId);
+    if (newActiveTaskId !== activeTaskId) {
+      setSessionsCompleted(0);
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    setActiveTaskId(newActiveTaskId);
+  };
 
   function saveTimerState(timerState) {
     try {
@@ -39,8 +51,6 @@ const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsC
   saveTimerState({ time, isRunning, sessionsCompleted });
 }, [time, isRunning, sessionsCompleted]);
 
-
-  // Timer Logic //
   useEffect(() => {
     if (isRunning && time > 0) {
       timerRef.current = setInterval(() => {
@@ -63,7 +73,11 @@ const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsC
     saveTimerState(timerState);
   }, [time, isRunning, sessionsCompleted]);
 
-  // Formatting Time //
+  useEffect(() => {
+    const activeTask = tasks.find(task => task.id === activeTaskId);
+    setActiveTaskTitle(activeTask?.title ?? "");
+  }, [activeTaskId, tasks]);
+
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60)
       .toString()
@@ -82,7 +96,7 @@ const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsC
 
   return (
 
-    <div className={styles.card}>
+    <div className={styles.card} onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
       <div className={styles.headingWrapper}>
         <h2 className={styles.heading}>
           <span className={styles.clockIcon}>
@@ -94,7 +108,7 @@ const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsC
       <div className={styles.timerWrapper}>
         <div className={styles.timer}>
           <p>Working on:</p>
-          <strong>Complete project proposal</strong>
+          <strong>{activeTaskTitle || "No task selected"}</strong>
           <p>Sessions completed: {sessionsCompleted}</p>
           <h1 className={styles.timeDisplay}>{formatTime(time)}</h1>
         </div>
