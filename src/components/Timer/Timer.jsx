@@ -1,15 +1,46 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import styles from "./Timer.module.css";
 import { FaRegClock } from "react-icons/fa";
 
 const INITIAL_TIME = 25 * 60; // 25 minutes
+const STORAGE_KEY = "pomodoro-timer-state";
+
+const loadTimerState = () => {
+  try {
+    const savedState = localStorage.getItem(STORAGE_KEY);
+    if (savedState) {
+      return JSON.parse(savedState);
+    }
+  } catch (error) {
+    console.error("Failed to load timer state:", error);
+  }
+
+  return null;
+};
 
 const PomodoroCard = () => {
-  const [time, setTime] = useState(INITIAL_TIME);
-  const [isRunning, setIsRunning] = useState(false);
-  const [sessionsCompleted, setSessionsCompleted] = useState(0);
+const savedState = loadTimerState();
+
+const [time, setTime] = useState(savedState?.time ?? INITIAL_TIME);
+const [isRunning, setIsRunning] = useState(savedState?.isRunning ?? false);
+const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsCompleted ?? 0);
+
   const timerRef = useRef(null);
 
+  function saveTimerState(timerState) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(timerState));
+    } catch (error) {
+      console.error("Failed to save timer state:", error);
+    }
+  }
+
+  useEffect(() => {
+  saveTimerState({ time, isRunning, sessionsCompleted });
+}, [time, isRunning, sessionsCompleted]);
+
+
+  // Timer Logic //
   useEffect(() => {
     if (isRunning && time > 0) {
       timerRef.current = setInterval(() => {
@@ -22,6 +53,17 @@ const PomodoroCard = () => {
     return () => clearInterval(timerRef.current);
   }, [isRunning, time]);
 
+  useEffect(() => {
+    const timerState = {
+      time,
+      isRunning,
+      sessionsCompleted,
+      timestamp: Date.now(),
+    };
+    saveTimerState(timerState);
+  }, [time, isRunning, sessionsCompleted]);
+
+  // Formatting Time //
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60)
       .toString()
@@ -31,21 +73,21 @@ const PomodoroCard = () => {
   };
 
   const handleStartPause = () => setIsRunning((prev) => !prev);
+
   const handleReset = () => {
     setTime(INITIAL_TIME);
     setIsRunning(false);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
-  const HeadingWithIcon = () => {};
-
   return (
+
     <div className={styles.card}>
       <div className={styles.headingWrapper}>
         <h2 className={styles.heading}>
           <span className={styles.clockIcon}>
-          <FaRegClock className={styles.icon} />
+            <FaRegClock className={styles.icon} />
           </span>
-          
           Pomodoro Timer
         </h2>
       </div>
