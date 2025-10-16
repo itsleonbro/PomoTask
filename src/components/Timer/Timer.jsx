@@ -80,9 +80,8 @@ const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsC
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const HeadingWithIcon = () => {};
-
   return (
+
     <div className={styles.card}>
       <div className={styles.headingWrapper}>
         <h2 className={styles.heading}>
