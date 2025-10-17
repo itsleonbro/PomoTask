@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./Timer.module.css";
 import { FaRegClock } from "react-icons/fa";
 
-const INITIAL_TIME = 10; // 25 minutes
+const INITIAL_TIME = 25 * 60; 
 const STORAGE_KEY = "pomodoro-timer-state";
 
 const loadTimerState = () => {
@@ -18,7 +18,7 @@ const loadTimerState = () => {
   return null;
 };
 
-const PomodoroCard = ({ activeTaskId, setActiveTaskId, tasks }) => {
+const PomodoroCard = ({ activeTaskId, setActiveTaskId, tasks, updateTaskSessions }) => {
 const savedState = loadTimerState();
 
 const [time, setTime] = useState(savedState?.time ?? INITIAL_TIME);
@@ -33,8 +33,9 @@ const [activeTaskTitle, setActiveTaskTitle] = useState("");
     const droppedId = e.dataTransfer.getData("text/plain");
     const newActiveTaskId = Number(droppedId);
     if (newActiveTaskId !== activeTaskId) {
-      setSessionsCompleted(0);
-      localStorage.removeItem(STORAGE_KEY);
+      const activeTask = tasks.find(task => task.id === newActiveTaskId);
+      const taskSessions = activeTask ? activeTask.sessions : 0;
+      setSessionsCompleted(taskSessions);
     }
     setActiveTaskId(newActiveTaskId);
   };
@@ -56,12 +57,18 @@ const [activeTaskTitle, setActiveTaskTitle] = useState("");
       timerRef.current = setInterval(() => {
         setTime((prev) => prev - 1);
       }, 1000);
-    } else if (time === 0) {
-      setSessionsCompleted((prev) => prev + 1);
+    } else if (time === 0 && isRunning) {
+      setSessionsCompleted((prev) => {
+        const newSessions = prev + 1;
+        if (activeTaskId) {
+          updateTaskSessions(activeTaskId, newSessions);
+        }
+        return newSessions;
+      });
       setIsRunning(false);
     }
     return () => clearInterval(timerRef.current);
-  }, [isRunning, time]);
+  }, [isRunning, time, activeTaskId, updateTaskSessions]);
 
   useEffect(() => {
     const timerState = {
@@ -86,11 +93,24 @@ const [activeTaskTitle, setActiveTaskTitle] = useState("");
     return `${m}:${s}`;
   };
 
-  const handleStartPause = () => setIsRunning((prev) => !prev);
+  const handleStartPause = () => {
+    if (!isRunning) {
+      if (time === 0) {
+        setTime(INITIAL_TIME);
+      }
+      setIsRunning(true);
+    } else {
+      setIsRunning(false);
+    }
+  };
 
   const handleReset = () => {
     setTime(INITIAL_TIME);
     setIsRunning(false);
+    setSessionsCompleted(0);
+    if (activeTaskId) {
+      updateTaskSessions(activeTaskId, 0);
+    }
     localStorage.removeItem(STORAGE_KEY);
   };
 

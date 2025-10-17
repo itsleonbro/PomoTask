@@ -7,7 +7,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import React, { useState } from "react";
 
-const Tasks = ({ tasks, setTasks }) => {
+const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
@@ -21,6 +21,9 @@ const Tasks = ({ tasks, setTasks }) => {
   const handleDelete = (id) => {
     const updatedTask = tasks.filter((task) => task.id !== id);
     setTasks(updatedTask);
+    if (activeTaskId === id) {
+      setActiveTaskId(null);
+    }
   };
 
   const handleEdit = (id, currentTitle) => {
