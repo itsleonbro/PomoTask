@@ -43,7 +43,7 @@ const Home = () => {
 
   const handleTaskCompleted = useCallback(() => {
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
+    setTimeout(() => setShowToast(false), 5000); // Auto-hide after 3 seconds
   }, []);
 
   return (

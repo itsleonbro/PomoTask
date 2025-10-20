@@ -19,7 +19,7 @@ const MotivationalBanner = () => {
       ) : error ? (
         <p>Failed to load quote</p>
       ) : (
-        <p className={styles.quote}>"{quote}"</p>
+        <p className={styles.quote}>{quote}</p>
       )}
     </div>
   );
