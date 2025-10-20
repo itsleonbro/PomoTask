@@ -66,7 +66,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
 
     // Trigger toast if task was completed (pending -> done)
     if (wasPending && onTaskCompleted) {
-      onTaskCompleted();
+      onTaskCompleted(task.title);
     }
   };
 
