@@ -5,22 +5,25 @@ import { FaPlus } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const Tasks = () => {
-  const [tasks, setTasks] = useState([]);
+const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
   const handleAddClick = () => {
     setShowForm(true);
   };
 
-  const handleDelete = id => {
-    const updatedTask = tasks.filter(task => task.id !== id);
+  const handleDelete = (id) => {
+    const updatedTask = tasks.filter((task) => task.id !== id);
     setTasks(updatedTask);
+    if (activeTaskId === id) {
+      setActiveTaskId(null);
+    }
   };
 
   const handleEdit = (id, currentTitle) => {
@@ -28,8 +31,8 @@ const Tasks = () => {
     setEditedTitle(currentTitle);
   };
 
-  const handleToggleStatus = id => {
-    const updatedTasks = tasks.map(task =>
+  const handleToggleStatus = (id) => {
+    const updatedTasks = tasks.map((task) =>
       task.id === id
         ? { ...task, status: task.status === "done" ? "pending" : "done" }
         : task
@@ -37,8 +40,8 @@ const Tasks = () => {
     setTasks(updatedTasks);
   };
 
-  const handleSaveEdit = id => {
-    const updatedTasks = tasks.map(task =>
+  const handleSaveEdit = (id) => {
+    const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, title: editedTitle } : task
     );
     setTasks(updatedTasks);
@@ -46,7 +49,7 @@ const Tasks = () => {
     setEditedTitle("");
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
@@ -62,14 +65,28 @@ const Tasks = () => {
     setShowForm(false);
   };
 
-  useEffect(() => {
-    const stored = localStorage.getItem("tasks");
-    if (stored) setTasks(JSON.parse(stored));
-  }, []);
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.setData("text/plain", tasks[index].id.toString());
+  };
 
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const dragIndex = draggedIndex;
+    if (dragIndex === null || dragIndex === dropIndex) return;
+
+    const newTasks = [...tasks];
+    const [draggedTask] = newTasks.splice(dragIndex, 1);
+    newTasks.splice(dropIndex, 0, draggedTask);
+    setTasks(newTasks);
+    setDraggedIndex(null);
+  };
+
+
 
   return (
     <>
@@ -93,9 +110,10 @@ const Tasks = () => {
               <input
                 type="text"
                 value={newTask}
-                onChange={e => setNewTask(e.target.value)}
+                onChange={(e) => setNewTask(e.target.value)}
                 placeholder="What needs to be done?"
                 className={styles.taskInput}
+                maxLength="50"
                 autoFocus
               />
               <div className={styles.formActions}>
@@ -127,16 +145,16 @@ const Tasks = () => {
               </p>
             </div>
           ) : (
-            tasks.map(task => (
-              <div key={task.id} className={styles.task}>
+            tasks.map((task, index) => (
+              <div key={task.id} className={styles.task} draggable onDragStart={(e) => handleDragStart(e, index)} onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, index)}>
                 <div className={styles.leftSide}>
                   {editTaskId === task.id ? (
                     <input
                       type="text"
                       value={editedTitle}
-                      onChange={e => setEditedTitle(e.target.value)}
+                      onChange={(e) => setEditedTitle(e.target.value)}
                       onBlur={() => handleSaveEdit(task.id)}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           handleSaveEdit(task.id);
                         } else if (e.key === "Escape") {
@@ -145,6 +163,7 @@ const Tasks = () => {
                         }
                       }}
                       className={styles.editInput}
+                      maxLength="50"
                       autoFocus
                     />
                   ) : (
