@@ -1,6 +1,7 @@
 import styles from "./Home.module.css";
 import Timer from "../components/Timer/Timer";
 import Tasks from "../components/Tasks/Tasks";
+import MotivationalBanner from "../components/Banners/MotivationalBanner";
 import { useState, useEffect, useCallback } from "react";
 
 const Home = () => {
@@ -32,14 +33,31 @@ const Home = () => {
   }, [activeTaskId]);
 
   const updateTaskSessions = useCallback((taskId, newSessions) => {
-    setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? { ...task, sessions: newSessions } : task));
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, sessions: newSessions } : task
+      )
+    );
   }, []);
 
   return (
     <>
       <div className={styles.container}>
-        <Timer activeTaskId={activeTaskId} setActiveTaskId={setActiveTaskId} tasks={tasks} updateTaskSessions={updateTaskSessions} />
-        <Tasks activeTaskId={activeTaskId} setActiveTaskId={setActiveTaskId} tasks={tasks} setTasks={setTasks} />
+        <MotivationalBanner />
+        <div className={styles.mainContent}>
+          <Timer
+            activeTaskId={activeTaskId}
+            setActiveTaskId={setActiveTaskId}
+            tasks={tasks}
+            updateTaskSessions={updateTaskSessions}
+          />
+          <Tasks
+            activeTaskId={activeTaskId}
+            setActiveTaskId={setActiveTaskId}
+            tasks={tasks}
+            setTasks={setTasks}
+          />
+        </div>
       </div>
     </>
   );
