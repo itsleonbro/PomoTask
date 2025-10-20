@@ -113,6 +113,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
                 onChange={(e) => setNewTask(e.target.value)}
                 placeholder="What needs to be done?"
                 className={styles.taskInput}
+                maxLength="50"
                 autoFocus
               />
               <div className={styles.formActions}>
@@ -162,6 +163,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
                         }
                       }}
                       className={styles.editInput}
+                      maxLength="50"
                       autoFocus
                     />
                   ) : (
