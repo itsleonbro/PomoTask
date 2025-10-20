@@ -2,25 +2,88 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./Timer.module.css";
 import { FaRegClock } from "react-icons/fa";
 
-const INITIAL_TIME = 25 * 60; // 25 minutes
+const INITIAL_TIME = 25 * 60; 
+const STORAGE_KEY = "pomodoro-timer-state";
 
-const PomodoroCard = () => {
-  const [time, setTime] = useState(INITIAL_TIME);
-  const [isRunning, setIsRunning] = useState(false);
-  const [sessionsCompleted, setSessionsCompleted] = useState(0);
+const loadTimerState = () => {
+  try {
+    const savedState = localStorage.getItem(STORAGE_KEY);
+    if (savedState) {
+      return JSON.parse(savedState);
+    }
+  } catch (error) {
+    console.error("Failed to load timer state:", error);
+  }
+
+  return null;
+};
+
+const PomodoroCard = ({ activeTaskId, setActiveTaskId, tasks, updateTaskSessions }) => {
+const savedState = loadTimerState();
+
+const [time, setTime] = useState(savedState?.time ?? INITIAL_TIME);
+const [isRunning, setIsRunning] = useState(savedState?.isRunning ?? false);
+const [sessionsCompleted, setSessionsCompleted] = useState(savedState?.sessionsCompleted ?? 0);
+const [activeTaskTitle, setActiveTaskTitle] = useState("");
+
   const timerRef = useRef(null);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedId = e.dataTransfer.getData("text/plain");
+    const newActiveTaskId = Number(droppedId);
+    if (newActiveTaskId !== activeTaskId) {
+      const activeTask = tasks.find(task => task.id === newActiveTaskId);
+      const taskSessions = activeTask ? activeTask.sessions : 0;
+      setSessionsCompleted(taskSessions);
+    }
+    setActiveTaskId(newActiveTaskId);
+  };
+
+  function saveTimerState(timerState) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(timerState));
+    } catch (error) {
+      console.error("Failed to save timer state:", error);
+    }
+  }
+
+  useEffect(() => {
+  saveTimerState({ time, isRunning, sessionsCompleted });
+}, [time, isRunning, sessionsCompleted]);
 
   useEffect(() => {
     if (isRunning && time > 0) {
       timerRef.current = setInterval(() => {
         setTime((prev) => prev - 1);
       }, 1000);
-    } else if (time === 0) {
-      setSessionsCompleted((prev) => prev + 1);
+    } else if (time === 0 && isRunning) {
+      setSessionsCompleted((prev) => {
+        const newSessions = prev + 1;
+        if (activeTaskId) {
+          updateTaskSessions(activeTaskId, newSessions);
+        }
+        return newSessions;
+      });
       setIsRunning(false);
     }
     return () => clearInterval(timerRef.current);
-  }, [isRunning, time]);
+  }, [isRunning, time, activeTaskId, updateTaskSessions]);
+
+  useEffect(() => {
+    const timerState = {
+      time,
+      isRunning,
+      sessionsCompleted,
+      timestamp: Date.now(),
+    };
+    saveTimerState(timerState);
+  }, [time, isRunning, sessionsCompleted]);
+
+  useEffect(() => {
+    const activeTask = tasks.find(task => task.id === activeTaskId);
+    setActiveTaskTitle(activeTask?.title ?? "");
+  }, [activeTaskId, tasks]);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60)
@@ -30,29 +93,42 @@ const PomodoroCard = () => {
     return `${m}:${s}`;
   };
 
-  const handleStartPause = () => setIsRunning((prev) => !prev);
+  const handleStartPause = () => {
+    if (!isRunning) {
+      if (time === 0) {
+        setTime(INITIAL_TIME);
+      }
+      setIsRunning(true);
+    } else {
+      setIsRunning(false);
+    }
+  };
+
   const handleReset = () => {
     setTime(INITIAL_TIME);
     setIsRunning(false);
+    setSessionsCompleted(0);
+    if (activeTaskId) {
+      updateTaskSessions(activeTaskId, 0);
+    }
+    localStorage.removeItem(STORAGE_KEY);
   };
 
-  const HeadingWithIcon = () => {};
-
   return (
-    <div className={styles.card}>
+
+    <div className={styles.card} onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
       <div className={styles.headingWrapper}>
         <h2 className={styles.heading}>
           <span className={styles.clockIcon}>
-          <FaRegClock className={styles.icon} />
+            <FaRegClock className={styles.icon} />
           </span>
-          
           Pomodoro Timer
         </h2>
       </div>
       <div className={styles.timerWrapper}>
         <div className={styles.timer}>
           <p>Working on:</p>
-          <strong>Complete project proposal</strong>
+          <strong>{activeTaskTitle || "No task selected"}</strong>
           <p>Sessions completed: {sessionsCompleted}</p>
           <h1 className={styles.timeDisplay}>{formatTime(time)}</h1>
         </div>

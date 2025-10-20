@@ -3,6 +3,7 @@
   backdrop-filter: blur(10px);
   color: #0a0a0a;
   width: 420px;
+  max-width: 100%;
   min-height: 500px;
   border-radius: 24px;
   padding: 32px 24px;
@@ -61,6 +62,11 @@
   cursor: pointer;
   background: rgba(255, 255, 255, 0.7);
   transition: all 0.2s ease;
+}
+
+.task h3 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .task:hover {
@@ -280,4 +286,158 @@
   margin: 0;
   line-height: 1.5;
   max-width: 280px;
+}
+
+/* mobile responsive styles */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    max-width: 500px;
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  .task {
+    padding: 16px 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .leftSide {
+    width: 100%;
+  }
+
+  .rightSide {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .iconButtons {
+    gap: 20px;
+  }
+
+  .iconButtons span {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .addBtn {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 16px;
+    border-radius: 16px;
+    min-height: 400px;
+  }
+
+  .header h2 {
+    font-size: 20px;
+  }
+
+  .task {
+    padding: 14px 16px;
+    border-radius: 12px;
+  }
+
+  .task h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .taskInfo {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .taskStatus,
+  .taskSessions {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .iconButtons {
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .iconButtons span {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .addBtn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .form {
+    margin: 16px 0;
+  }
+
+  .inputContainer {
+    padding: 16px;
+  }
+
+  .taskInput {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+
+  .formActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+
+  .emptyState {
+    padding: 40px 16px;
+  }
+
+  .emptyTitle {
+    font-size: 18px;
+  }
+
+  .emptyMessage {
+    font-size: 13px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .container {
+    padding: 16px 12px;
+  }
+
+  .task {
+    padding: 12px 14px;
+  }
+
+  .iconButtons {
+    gap: 12px;
+  }
+
+  .iconButtons span {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .addBtn {
+    width: 40px;
+    height: 40px;
+  }
 }
