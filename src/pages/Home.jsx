@@ -23,6 +23,7 @@ const Home = () => {
       return [];
     }
   });
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -40,10 +41,15 @@ const Home = () => {
     );
   }, []);
 
+  const handleTaskCompleted = useCallback(() => {
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
+  }, []);
+
   return (
     <>
       <div className={styles.container}>
-        <MotivationalBanner />
+        {showToast && <MotivationalBanner />}
         <div className={styles.mainContent}>
           <Timer
             activeTaskId={activeTaskId}
@@ -56,6 +62,7 @@ const Home = () => {
             setActiveTaskId={setActiveTaskId}
             tasks={tasks}
             setTasks={setTasks}
+            onTaskCompleted={handleTaskCompleted}
           />
         </div>
       </div>
