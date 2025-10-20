@@ -10,7 +10,7 @@ import { FaRobot } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import React, { useState } from "react";
 
-const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
+const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted }) => {
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
@@ -54,12 +54,20 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
   };
 
   const handleToggleStatus = (id) => {
+    const task = tasks.find(t => t.id === id);
+    const wasPending = task.status === "pending";
+
     const updatedTasks = tasks.map((task) =>
       task.id === id
         ? { ...task, status: task.status === "done" ? "pending" : "done" }
         : task
     );
     setTasks(updatedTasks);
+
+    // Trigger toast if task was completed (pending -> done)
+    if (wasPending && onTaskCompleted) {
+      onTaskCompleted();
+    }
   };
 
   const handleSaveEdit = (id) => {
