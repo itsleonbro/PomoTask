@@ -8,10 +8,9 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaRobot } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const Tasks = () => {
-  const [tasks, setTasks] = useState([]);
+const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted }) => {
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
@@ -28,13 +27,14 @@ const Tasks = () => {
     loc: "Location",
     tl: "Tools",
   };
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
   const handleAddClick = () => {
     setShowForm(true);
   };
 
-  const handleDelete = id => {
-    const updatedTask = tasks.filter(task => task.id !== id);
+  const handleDelete = (id) => {
+    const updatedTask = tasks.filter((task) => task.id !== id);
     setTasks(updatedTask);
 
     // clean up expanded state
@@ -43,6 +43,9 @@ const Tasks = () => {
       newSet.delete(id);
       return newSet;
     });
+    if (activeTaskId === id) {
+      setActiveTaskId(null);
+    }
   };
 
   const handleEdit = (id, currentTitle) => {
@@ -50,17 +53,25 @@ const Tasks = () => {
     setEditedTitle(currentTitle);
   };
 
-  const handleToggleStatus = id => {
-    const updatedTasks = tasks.map(task =>
+  const handleToggleStatus = (id) => {
+    const task = tasks.find(t => t.id === id);
+    const wasPending = task.status === "pending";
+
+    const updatedTasks = tasks.map((task) =>
       task.id === id
         ? { ...task, status: task.status === "done" ? "pending" : "done" }
         : task
     );
     setTasks(updatedTasks);
+
+    // Trigger toast if task was completed (pending -> done)
+    if (wasPending && onTaskCompleted) {
+      onTaskCompleted();
+    }
   };
 
-  const handleSaveEdit = id => {
-    const updatedTasks = tasks.map(task =>
+  const handleSaveEdit = (id) => {
+    const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, title: editedTitle } : task
     );
     setTasks(updatedTasks);
@@ -91,7 +102,7 @@ const Tasks = () => {
     setLoadingTasks(prev => new Set(prev).add(taskId));
 
     try {
-      const response = await axios.post("http://localhost:5001/api/clarify", {
+      const response = await axios.post("http://localhost:3000/api/clarify", {
         task: task.title,
       });
 
@@ -122,7 +133,7 @@ const Tasks = () => {
     }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
@@ -139,14 +150,28 @@ const Tasks = () => {
     setShowForm(false);
   };
 
-  useEffect(() => {
-    const stored = localStorage.getItem("tasks");
-    if (stored) setTasks(JSON.parse(stored));
-  }, []);
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.setData("text/plain", tasks[index].id.toString());
+  };
 
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const dragIndex = draggedIndex;
+    if (dragIndex === null || dragIndex === dropIndex) return;
+
+    const newTasks = [...tasks];
+    const [draggedTask] = newTasks.splice(dragIndex, 1);
+    newTasks.splice(dropIndex, 0, draggedTask);
+    setTasks(newTasks);
+    setDraggedIndex(null);
+  };
+
+
 
   return (
     <>
@@ -170,9 +195,10 @@ const Tasks = () => {
               <input
                 type="text"
                 value={newTask}
-                onChange={e => setNewTask(e.target.value)}
+                onChange={(e) => setNewTask(e.target.value)}
                 placeholder="What needs to be done?"
                 className={styles.taskInput}
+                maxLength="50"
                 autoFocus
               />
               <div className={styles.formActions}>
@@ -204,17 +230,17 @@ const Tasks = () => {
               </p>
             </div>
           ) : (
-            tasks.map(task => (
+            tasks.map((task, index) => (
               <div key={task.id} className={styles.taskWrapper}>
-                <div className={styles.task}>
+                <div className={styles.task} draggable onDragStart={(e) => handleDragStart(e, index)} onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, index)}>
                   <div className={styles.leftSide}>
                     {editTaskId === task.id ? (
                       <input
                         type="text"
                         value={editedTitle}
-                        onChange={e => setEditedTitle(e.target.value)}
+                        onChange={(e) => setEditedTitle(e.target.value)}
                         onBlur={() => handleSaveEdit(task.id)}
-                        onKeyDown={e => {
+                        onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             handleSaveEdit(task.id);
                           } else if (e.key === "Escape") {
@@ -223,7 +249,8 @@ const Tasks = () => {
                           }
                         }}
                         className={styles.editInput}
-                        autoFocus
+                        maxLength="50"
+                      autoFocus
                       />
                     ) : (
                       <h3>{task.title}</h3>
