@@ -441,3 +441,85 @@
     height: 40px;
   }
 }
+
+.taskWrapper {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.aiButton {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.aiButton:hover {
+  transform: scale(1.1);
+}
+
+.aiSuggestionsSection {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e5e7eb;
+  padding: 16px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 300px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+.loading {
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+  padding: 12px;
+}
+
+.aiSuggestions {
+  display: grid;
+  gap: 12px;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.suggestionLabel {
+  font-weight: 600;
+  color: #4b5563;
+  min-width: 120px;
+  font-size: 14px;
+}
+
+.suggestionValue {
+  color: #1f2937;
+  font-size: 14px;
+  flex: 1;
+}
+
+.iconButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.iconButtons span {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

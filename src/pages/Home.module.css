@@ -1,47 +1,45 @@
+/* Mobile-first responsive design */
 .container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 60px;
+  flex-direction: column;
+  align-items: center;
   min-height: 100vh;
   width: 100%;
-  padding: 40px 20px;
+  padding: 16px 12px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-attachment: fixed;
   box-sizing: border-box;
 }
 
-/* Tablet  */
-@media (max-width: 1024px) {
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Small tablets and larger screens */
+@media (min-width: 768px) {
   .container {
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-    padding: 20px;
+    padding: 40px 20px;
+  }
+
+  .mainContent {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 60px;
   }
 }
 
-/* mobile landscape & small tablets */
-@media (max-width: 768px) {
+/* Large screens */
+@media (min-width: 1024px) {
   .container {
-    gap: 30px;
-    padding: 15px;
+    padding: 40px 20px;
   }
-}
 
-/* mobile portrait */
-@media (max-width: 480px) {
-  .container {
-    gap: 20px;
-    padding: 10px;
-    min-height: 100vh;
-  }
-}
-
-/*  smalller screens */
-@media (max-width: 320px) {
-  .container {
-    gap: 15px;
-    padding: 8px;
+  .mainContent {
+    gap: 60px;
   }
 }
