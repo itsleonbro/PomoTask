@@ -94,7 +94,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks }) => {
     setLoadingTasks(prev => new Set(prev).add(taskId));
 
     try {
-      const response = await axios.post("http://localhost:5001/api/clarify", {
+      const response = await axios.post("http://localhost:3000/api/clarify", {
         task: task.title,
       });
 
