@@ -11,7 +11,7 @@
   box-sizing: border-box;
 }
 
-/* responsive design */
+/* Tablet  */
 @media (max-width: 1024px) {
   .container {
     flex-direction: column;
@@ -21,9 +21,27 @@
   }
 }
 
+/* mobile landscape & small tablets */
 @media (max-width: 768px) {
   .container {
     gap: 30px;
     padding: 15px;
+  }
+}
+
+/* mobile portrait */
+@media (max-width: 480px) {
+  .container {
+    gap: 20px;
+    padding: 10px;
+    min-height: 100vh;
+  }
+}
+
+/*  smalller screens */
+@media (max-width: 320px) {
+  .container {
+    gap: 15px;
+    padding: 8px;
   }
 }
