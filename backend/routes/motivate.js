@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { context } = req.body;
+    
 
     res.json({ message: "Motivation endpoint" });
   } catch (error) {
