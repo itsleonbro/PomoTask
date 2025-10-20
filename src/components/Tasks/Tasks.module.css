@@ -64,6 +64,11 @@
   transition: all 0.2s ease;
 }
 
+.task h3 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .task:hover {
   border-color: rgba(109, 40, 217, 0.3);
   background: rgba(255, 255, 255, 0.9);
