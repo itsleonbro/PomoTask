@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./MotivationalBanner.module.css";
 
-const MotivationalBanner = () => {
+const MotivationalBanner = ({ isVisible }) => {
   const [quote, setQuote] = useState("Stay focused and keep pushing forward!");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const MotivationalBanner = () => {
   }, []);
 
   return (
-    <div className={styles.banner}>
+    <div className={`${styles.banner} ${!isVisible ? styles.hide : ''}`}>
       {loading ? (
         <p>Loading quote...</p>
       ) : error ? (

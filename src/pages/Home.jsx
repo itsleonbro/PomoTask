@@ -43,13 +43,13 @@ const Home = () => {
 
   const handleTaskCompleted = useCallback(() => {
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 5000); // Auto-hide after 3 seconds
+    setTimeout(() => setShowToast(false), 5000); 
   }, []);
 
   return (
     <>
       <div className={styles.container}>
-        {showToast && <MotivationalBanner />}
+        <MotivationalBanner isVisible={showToast} />
         <div className={styles.mainContent}>
           <Timer
             activeTaskId={activeTaskId}

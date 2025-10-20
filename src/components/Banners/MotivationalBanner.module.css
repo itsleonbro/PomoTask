@@ -22,15 +22,29 @@ background: linear-gradient(135deg, rgba(66, 135, 245, 0.95) 0%, rgba(155, 89, 2
   animation: slideDown 0.5s ease-out;
 }
 
+.banner.hide {
+  animation: slideUp 0.5s ease-in forwards;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(-20px);
   }
-
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
   }
 }
 
