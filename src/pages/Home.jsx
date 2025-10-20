@@ -24,6 +24,7 @@ const Home = () => {
     }
   });
   const [showToast, setShowToast] = useState(false);
+  const [toastTrigger, setToastTrigger] = useState(0);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -41,15 +42,19 @@ const Home = () => {
     );
   }, []);
 
-  const handleTaskCompleted = useCallback(() => {
+  const [completedTaskTitle, setCompletedTaskTitle] = useState("");
+
+  const handleTaskCompleted = useCallback((taskTitle) => {
+    setCompletedTaskTitle(taskTitle);
+    setToastTrigger(prev => prev + 1);
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 5000); 
+    setTimeout(() => setShowToast(false), 5000);
   }, []);
 
   return (
     <>
       <div className={styles.container}>
-        <MotivationalBanner isVisible={showToast} />
+        <MotivationalBanner isVisible={showToast} trigger={toastTrigger} taskTitle={completedTaskTitle} />
         <div className={styles.mainContent}>
           <Timer
             activeTaskId={activeTaskId}
