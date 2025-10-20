@@ -1,0 +1,47 @@
+/* Mobile-first responsive design */
+.banner {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 100%;
+}
+
+.quote {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Small tablets and larger screens */
+@media (min-width: 768px) {
+  .banner {
+    padding: 20px;
+    margin-bottom: 20px;
+    max-width: 600px;
+  }
+
+  .quote {
+    font-size: 1.2rem;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  .banner {
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .quote {
+    font-size: 1.3rem;
+  }
+}
