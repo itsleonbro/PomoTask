@@ -109,7 +109,7 @@ The backend provides several AI-powered endpoints:
 **Backend**: Deploy the Express server to platforms like Railway, Render, Heroku, or your preferred Node.js hosting service. Ensure environment variables are properly configured.
 
 A **live deployed version** of the application is also available!  
-Check out the latest deployment [here](pomo-task-azure.vercel.app/).
+Check out the latest deployment [here](https://pomo-task-azure.vercel.app/).
 
 ## Contributing
 
