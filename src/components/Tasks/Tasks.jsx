@@ -10,7 +10,13 @@ import { FaRobot } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import React, { useState } from "react";
 
-const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted }) => {
+const Tasks = ({
+  activeTaskId,
+  setActiveTaskId,
+  tasks,
+  setTasks,
+  onTaskCompleted,
+}) => {
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
@@ -33,8 +39,8 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
-    const updatedTask = tasks.filter((task) => task.id !== id);
+  const handleDelete = id => {
+    const updatedTask = tasks.filter(task => task.id !== id);
     setTasks(updatedTask);
 
     // clean up expanded state
@@ -53,11 +59,11 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setEditedTitle(currentTitle);
   };
 
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = id => {
     const task = tasks.find(t => t.id === id);
     const wasPending = task.status === "pending";
 
-    const updatedTasks = tasks.map((task) =>
+    const updatedTasks = tasks.map(task =>
       task.id === id
         ? { ...task, status: task.status === "done" ? "pending" : "done" }
         : task
@@ -70,8 +76,8 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     }
   };
 
-  const handleSaveEdit = (id) => {
-    const updatedTasks = tasks.map((task) =>
+  const handleSaveEdit = id => {
+    const updatedTasks = tasks.map(task =>
       task.id === id ? { ...task, title: editedTitle } : task
     );
     setTasks(updatedTasks);
@@ -102,9 +108,14 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setLoadingTasks(prev => new Set(prev).add(taskId));
 
     try {
-      const response = await axios.post("http://localhost:3000/api/clarify", {
-        task: task.title,
-      });
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_API_URL || "https://pomotask.onrender.com"
+        }/api/clarify`,
+        {
+          task: task.title,
+        }
+      );
 
       if (response.data.success && response.data.task_context) {
         const updatedTasks = tasks.map(t =>
@@ -133,7 +144,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
@@ -155,7 +166,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     e.dataTransfer.setData("text/plain", tasks[index].id.toString());
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = e => {
     e.preventDefault();
   };
 
@@ -170,8 +181,6 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setTasks(newTasks);
     setDraggedIndex(null);
   };
-
-
 
   return (
     <>
@@ -195,7 +204,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
               <input
                 type="text"
                 value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
+                onChange={e => setNewTask(e.target.value)}
                 placeholder="What needs to be done?"
                 className={styles.taskInput}
                 maxLength="50"
@@ -232,15 +241,21 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
           ) : (
             tasks.map((task, index) => (
               <div key={task.id} className={styles.taskWrapper}>
-                <div className={styles.task} draggable onDragStart={(e) => handleDragStart(e, index)} onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, index)}>
+                <div
+                  className={styles.task}
+                  draggable
+                  onDragStart={e => handleDragStart(e, index)}
+                  onDragOver={handleDragOver}
+                  onDrop={e => handleDrop(e, index)}
+                >
                   <div className={styles.leftSide}>
                     {editTaskId === task.id ? (
                       <input
                         type="text"
                         value={editedTitle}
-                        onChange={(e) => setEditedTitle(e.target.value)}
+                        onChange={e => setEditedTitle(e.target.value)}
                         onBlur={() => handleSaveEdit(task.id)}
-                        onKeyDown={(e) => {
+                        onKeyDown={e => {
                           if (e.key === "Enter") {
                             handleSaveEdit(task.id);
                           } else if (e.key === "Escape") {
@@ -250,7 +265,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
                         }}
                         className={styles.editInput}
                         maxLength="50"
-                      autoFocus
+                        autoFocus
                       />
                     ) : (
                       <h3>{task.title}</h3>

@@ -18,7 +18,12 @@ const MotivationalBanner = ({ isVisible, trigger, taskTitle }) => {
     setError(null);
     try {
       const params = taskTitle ? { task: taskTitle } : {};
-      const response = await axios.get("http://localhost:3000/api/motivate", { params });
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL || "https://pomotask.onrender.com"
+        }/api/motivate`,
+        { params }
+      );
       if (response.data.success) {
         setQuote(response.data.quote);
       } else {
@@ -34,7 +39,7 @@ const MotivationalBanner = ({ isVisible, trigger, taskTitle }) => {
   };
 
   return (
-    <div className={`${styles.banner} ${!isVisible ? styles.hide : ''}`}>
+    <div className={`${styles.banner} ${!isVisible ? styles.hide : ""}`}>
       {loading ? (
         <p>Loading quote...</p>
       ) : error ? (
