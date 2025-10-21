@@ -1,0 +1,99 @@
+/* Mobile-first responsive design */
+.banner {
+background: linear-gradient(135deg, rgba(66, 135, 245, 0.95) 0%, rgba(155, 89, 255, 0.95) 100%);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  animation: slideDown 0.5s ease-out;
+}
+
+.banner.hide {
+  animation: slideUp 0.5s ease-in forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+.icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.quote {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-style: italic;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Small tablets and larger screens */
+@media (min-width: 768px) {
+  .banner {
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    max-width: 600px;
+    border-radius: 24px;
+  }
+
+  .icon {
+    font-size: 1.4rem;
+  }
+
+  .quote {
+    font-size: 1.1rem;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  .banner {
+    padding: 20px 28px;
+    margin-bottom: 24px;
+    border-radius: 28px;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+  }
+
+  .quote {
+    font-size: 1.2rem;
+  }
+}
