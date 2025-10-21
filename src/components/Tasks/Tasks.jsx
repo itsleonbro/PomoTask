@@ -8,15 +8,26 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaRobot } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaTag } from "react-icons/fa";
 import React, { useState } from "react";
 
-const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted }) => {
+const Tasks = ({
+  activeTaskId,
+  setActiveTaskId,
+  tasks,
+  setTasks,
+  onTaskCompleted,
+}) => {
   const [newTask, setNewTask] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [expandedTasks, setExpandedTasks] = useState(new Set());
   const [loadingTasks, setLoadingTasks] = useState(new Set());
+  const [categorizingTasks, setCategorizingTasks] = useState(new Set());
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editedCategory, setEditedCategory] = useState("");
+
 
   const labelMappings = {
     tm: "Time needed",
@@ -33,8 +44,8 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
-    const updatedTask = tasks.filter((task) => task.id !== id);
+  const handleDelete = id => {
+    const updatedTask = tasks.filter(task => task.id !== id);
     setTasks(updatedTask);
 
     // clean up expanded state
@@ -53,11 +64,11 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setEditedTitle(currentTitle);
   };
 
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = id => {
     const task = tasks.find(t => t.id === id);
     const wasPending = task.status === "pending";
 
-    const updatedTasks = tasks.map((task) =>
+    const updatedTasks = tasks.map(task =>
       task.id === id
         ? { ...task, status: task.status === "done" ? "pending" : "done" }
         : task
@@ -66,12 +77,12 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
 
     // Trigger toast if task was completed (pending -> done)
     if (wasPending && onTaskCompleted) {
-      onTaskCompleted();
+      onTaskCompleted(task.title);
     }
   };
 
-  const handleSaveEdit = (id) => {
-    const updatedTasks = tasks.map((task) =>
+  const handleSaveEdit = id => {
+    const updatedTasks = tasks.map(task =>
       task.id === id ? { ...task, title: editedTitle } : task
     );
     setTasks(updatedTasks);
@@ -102,9 +113,14 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setLoadingTasks(prev => new Set(prev).add(taskId));
 
     try {
-      const response = await axios.post("http://localhost:3000/api/clarify", {
-        task: task.title,
-      });
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_API_URL || "https://pomotask.onrender.com"
+        }/api/clarify`,
+        {
+          task: task.title,
+        }
+      );
 
       if (response.data.success && response.data.task_context) {
         const updatedTasks = tasks.map(t =>
@@ -133,7 +149,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
@@ -143,6 +159,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
       status: "pending",
       sessions: 0,
       aiSuggestions: null,
+      category: null,
     };
 
     setTasks([...tasks, task]);
@@ -150,12 +167,52 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setShowForm(false);
   };
 
+  const handleCategorize = async (taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    setCategorizingTasks(prev => new Set(prev).add(taskId));
+
+    try {
+      const response = await axios.get(`http://localhost:3000/api/categorize?task=${encodeURIComponent(task.title)}`);
+      if (response.data.success) {
+        const updatedTasks = tasks.map(t =>
+          t.id === taskId ? { ...t, category: response.data.category } : t
+        );
+        setTasks(updatedTasks);
+      }
+    } catch (error) {
+      console.error("Error categorizing task:", error);
+      alert("Failed to categorize task. Please try again.");
+    } finally {
+      setCategorizingTasks(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(taskId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleEditCategory = (id, currentCategory) => {
+    setEditingCategoryId(id);
+    setEditedCategory(currentCategory || "");
+  };
+
+  const handleSaveCategory = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, category: editedCategory || null } : task
+    );
+    setTasks(updatedTasks);
+    setEditingCategoryId(null);
+    setEditedCategory("");
+  };
+
   const handleDragStart = (e, index) => {
     setDraggedIndex(index);
     e.dataTransfer.setData("text/plain", tasks[index].id.toString());
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = e => {
     e.preventDefault();
   };
 
@@ -170,8 +227,6 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
     setTasks(newTasks);
     setDraggedIndex(null);
   };
-
-
 
   return (
     <>
@@ -195,7 +250,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
               <input
                 type="text"
                 value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
+                onChange={e => setNewTask(e.target.value)}
                 placeholder="What needs to be done?"
                 className={styles.taskInput}
                 maxLength="50"
@@ -232,15 +287,21 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
           ) : (
             tasks.map((task, index) => (
               <div key={task.id} className={styles.taskWrapper}>
-                <div className={styles.task} draggable onDragStart={(e) => handleDragStart(e, index)} onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, index)}>
+                <div
+                  className={styles.task}
+                  draggable
+                  onDragStart={e => handleDragStart(e, index)}
+                  onDragOver={handleDragOver}
+                  onDrop={e => handleDrop(e, index)}
+                >
                   <div className={styles.leftSide}>
                     {editTaskId === task.id ? (
                       <input
                         type="text"
                         value={editedTitle}
-                        onChange={(e) => setEditedTitle(e.target.value)}
+                        onChange={e => setEditedTitle(e.target.value)}
                         onBlur={() => handleSaveEdit(task.id)}
-                        onKeyDown={(e) => {
+                        onKeyDown={e => {
                           if (e.key === "Enter") {
                             handleSaveEdit(task.id);
                           } else if (e.key === "Escape") {
@@ -250,7 +311,7 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
                         }}
                         className={styles.editInput}
                         maxLength="50"
-                      autoFocus
+                        autoFocus
                       />
                     ) : (
                       <h3>{task.title}</h3>
@@ -261,6 +322,40 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
                       <div className={styles.taskSessions}>
                         {task.sessions} Sessions
                       </div>
+                      {task.category && (
+                        <div className={styles.taskCategory}>
+                          {editingCategoryId === task.id ? (
+                            <select
+                              value={editedCategory}
+                              onChange={(e) => setEditedCategory(e.target.value)}
+                              onBlur={() => handleSaveCategory(task.id)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  handleSaveCategory(task.id);
+                                } else if (e.key === "Escape") {
+                                  setEditingCategoryId(null);
+                                  setEditedCategory("");
+                                }
+                              }}
+                              className={styles.categorySelect}
+                              autoFocus
+                            >
+                              <option value="">No Category</option>
+                              <option value="Work">Work</option>
+                              <option value="Personal">Personal</option>
+                              <option value="Study">Study</option>
+                              <option value="Health">Health</option>
+                              <option value="Finance">Finance</option>
+                              <option value="Leisure">Leisure</option>
+                              <option value="Other">Other</option>
+                            </select>
+                          ) : (
+                            <span onClick={() => handleEditCategory(task.id, task.category)}>
+                              Category: {task.category}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -275,6 +370,18 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
                           <FaChevronUp color="#8b5cf6" size={25} />
                         ) : (
                           <FaRobot color="#8b5cf6" size={25} />
+                        )}
+                      </span>
+
+                      <span
+                        onClick={() => handleCategorize(task.id)}
+                        title="Categorize Task"
+                        className={styles.aiButton}
+                      >
+                        {categorizingTasks.has(task.id) ? (
+                          <div className={styles.loadingSpinner}>⟳</div>
+                        ) : (
+                          <FaTag color="#f59e0b" size={25} />
                         )}
                       </span>
 
