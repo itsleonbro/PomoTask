@@ -8,6 +8,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaRobot } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaTag } from "react-icons/fa";
 import React, { useState } from "react";
 
 const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted }) => {
@@ -17,6 +18,10 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
   const [editedTitle, setEditedTitle] = useState("");
   const [expandedTasks, setExpandedTasks] = useState(new Set());
   const [loadingTasks, setLoadingTasks] = useState(new Set());
+  const [categorizingTasks, setCategorizingTasks] = useState(new Set());
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editedCategory, setEditedCategory] = useState("");
+
 
   const labelMappings = {
     tm: "Time needed",
@@ -143,11 +148,52 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
       status: "pending",
       sessions: 0,
       aiSuggestions: null,
+      category: null,
     };
 
     setTasks([...tasks, task]);
     setNewTask("");
     setShowForm(false);
+  };
+
+  const handleCategorize = async (taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    setCategorizingTasks(prev => new Set(prev).add(taskId));
+
+    try {
+      const response = await axios.get(`http://localhost:3000/api/categorize?task=${encodeURIComponent(task.title)}`);
+      if (response.data.success) {
+        const updatedTasks = tasks.map(t =>
+          t.id === taskId ? { ...t, category: response.data.category } : t
+        );
+        setTasks(updatedTasks);
+      }
+    } catch (error) {
+      console.error("Error categorizing task:", error);
+      alert("Failed to categorize task. Please try again.");
+    } finally {
+      setCategorizingTasks(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(taskId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleEditCategory = (id, currentCategory) => {
+    setEditingCategoryId(id);
+    setEditedCategory(currentCategory || "");
+  };
+
+  const handleSaveCategory = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, category: editedCategory || null } : task
+    );
+    setTasks(updatedTasks);
+    setEditingCategoryId(null);
+    setEditedCategory("");
   };
 
   const handleDragStart = (e, index) => {
@@ -261,6 +307,40 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
                       <div className={styles.taskSessions}>
                         {task.sessions} Sessions
                       </div>
+                      {task.category && (
+                        <div className={styles.taskCategory}>
+                          {editingCategoryId === task.id ? (
+                            <select
+                              value={editedCategory}
+                              onChange={(e) => setEditedCategory(e.target.value)}
+                              onBlur={() => handleSaveCategory(task.id)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  handleSaveCategory(task.id);
+                                } else if (e.key === "Escape") {
+                                  setEditingCategoryId(null);
+                                  setEditedCategory("");
+                                }
+                              }}
+                              className={styles.categorySelect}
+                              autoFocus
+                            >
+                              <option value="">No Category</option>
+                              <option value="Work">Work</option>
+                              <option value="Personal">Personal</option>
+                              <option value="Study">Study</option>
+                              <option value="Health">Health</option>
+                              <option value="Finance">Finance</option>
+                              <option value="Leisure">Leisure</option>
+                              <option value="Other">Other</option>
+                            </select>
+                          ) : (
+                            <span onClick={() => handleEditCategory(task.id, task.category)}>
+                              Category: {task.category}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -275,6 +355,18 @@ const Tasks = ({ activeTaskId, setActiveTaskId, tasks, setTasks, onTaskCompleted
                           <FaChevronUp color="#8b5cf6" size={25} />
                         ) : (
                           <FaRobot color="#8b5cf6" size={25} />
+                        )}
+                      </span>
+
+                      <span
+                        onClick={() => handleCategorize(task.id)}
+                        title="Categorize Task"
+                        className={styles.aiButton}
+                      >
+                        {categorizingTasks.has(task.id) ? (
+                          <div className={styles.loadingSpinner}>⟳</div>
+                        ) : (
+                          <FaTag color="#f59e0b" size={25} />
                         )}
                       </span>
 
