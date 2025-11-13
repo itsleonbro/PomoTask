@@ -27,3 +27,12 @@ app.use("/api/motivate", motivateRouter);
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+//Serve the built frontend
+app.use(express.static(path.join(__dirname, "client", "dist")));
+
+app.get("*", (_, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
+
+export default app;
