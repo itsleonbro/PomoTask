@@ -1,0 +1,40 @@
+name: Deploy Backend to AWS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Create deployment package
+        run: |
+          cd backend
+          zip -r ../backend-deploy.zip . -x "node_modules/*" -x ".env" -x ".git/*"
+          cd ..
+      
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: pomotask-backend
+          environment_name: PomoTask-back-env
+          region: ${{ secrets.AWS_REGION }}
+          version_label: ${{ github.sha }}
+          deployment_package: backend-deploy.zip
+          wait_for_deployment: true
