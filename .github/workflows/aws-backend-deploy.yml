@@ -32,9 +32,10 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: pomotask-backend
+          application_name: PomoTask-back
           environment_name: PomoTask-back-env
           region: ${{ secrets.AWS_REGION }}
           version_label: ${{ github.sha }}
+          use_existing_version_if_available: true
           deployment_package: backend-deploy.zip
           wait_for_deployment: true
