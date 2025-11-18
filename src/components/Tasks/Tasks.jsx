@@ -27,6 +27,7 @@ const Tasks = ({
   const [categorizingTasks, setCategorizingTasks] = useState(new Set());
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [editedCategory, setEditedCategory] = useState("");
+  const apiUrl = "http://pomotask-back.eu-north-1.elasticbeanstalk.com";
 
   const labelMappings = {
     tm: "Time needed",
@@ -113,7 +114,7 @@ const Tasks = ({
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/clarify?task=${encodeURIComponent(task.title)}`
+        `${apiUrl}/api/clarify?task=${encodeURIComponent(task.title)}`
       );
 
       if (response.data.success && response.data.description) {
@@ -163,36 +164,64 @@ const Tasks = ({
     setNewTask("");
     setShowForm(false);
   };
+function extractJSONFromDescription(desc) {
+  if (!desc || typeof desc !== "string") return null;
 
-  const handleCategorize = async (taskId) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
+  // strip Markdown formatting like ```json and ```
+  const cleaned = desc.replace(/```json|```/gi, "").trim();
 
-    setCategorizingTasks((prev) => new Set(prev).add(taskId));
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    return null;
+  }
+}
 
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/api/categorize?task=${encodeURIComponent(task.title)}`
+const handleCategorize = async (taskId) => {
+  const task = tasks.find((t) => t.id === taskId);
+  if (!task) return;
+
+  setCategorizingTasks((prev) => new Set(prev).add(taskId));
+
+  try {
+    const response = await axios.get(
+      `${apiUrl}/api/categorize?task=${encodeURIComponent(task.title)}`
+    );
+
+    if (response.data.success) {
+      // Extract embedded JSON if required
+      const descriptionData = extractJSONFromDescription(response.data.description);
+
+      // merged result object (your requested structure)
+      const parsed = {
+        original_task: response.data.original_task,
+        category:
+          response.data.category || descriptionData?.category || "Uncategorized",
+        confidence:
+          response.data.confidence || descriptionData?.confidence || null,
+        rationale:
+          response.data.rationale || descriptionData?.rationale || null,
+        alternatives: descriptionData?.alternatives ?? [],
+      };
+
+      console.log("Parsed category data:", parsed);
+
+      const updatedTasks = tasks.map((t) =>
+        t.id === taskId ? { ...t, category: parsed.category, metadata: parsed } : t
       );
-      if (response.data.success) {
-        // Backend returns category directly
-        const category = response.data.category || "Uncategorized";
-        const updatedTasks = tasks.map((t) =>
-          t.id === taskId ? { ...t, category } : t
-        );
-        setTasks(updatedTasks);
-      }
-    } catch (error) {
-      console.error("Error categorizing task:", error);
-      alert("Failed to categorize task. Please try again.");
-    } finally {
-      setCategorizingTasks((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(taskId);
-        return newSet;
-      });
+
+      setTasks(updatedTasks);
     }
-  };
+  } catch (error) {
+    console.error("Error categorizing task:", error);
+  } finally {
+    setCategorizingTasks((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(taskId);
+      return newSet;
+    });
+  }
+};
 
   const handleEditCategory = (id, currentCategory) => {
     setEditingCategoryId(id);
@@ -432,17 +461,7 @@ const Tasks = ({
                       </div>
                     ) : null}
                   </div>
-                )}
-
-                {/* Category section */}
-                {task.category && (
-                  <div className={styles.categorySection}>
-                    <div className={styles.categoryDisplay}>
-                      <span className={styles.categoryLabel}>Category:</span>
-                      <span className={styles.categoryValue}>{task.category}</span>
-                    </div>
-                  </div>
-                )}
+                )}               
               </div>
             ))
           )}
